@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Core Identity Blueprint</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: #FFFFFF;
+            color: #000000;
+            padding: 60px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header Section */
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-placeholder {
+            margin: 24px 0;
+        }
+
+        .logo-placeholder img {
+            display: block;
+            margin: 0 auto;
+        }
+
+        .header p {
+            font-size: 18px;
+            color: #666666;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        /* Crown - Product */
+        .crown {
+            text-align: center;
+            margin-bottom: 100px;
+        }
+
+        .product-box {
+            display: inline-block;
+            padding: 30px 60px;
+            background: #FF0039;
+        }
+
+        .product-box h2 {
+            font-size: 36px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #FFFFFF;
+        }
+
+        /* Demographics Row */
+        .demographics-wrapper {
+            margin-bottom: 200px;
+            position: relative;
+            min-height: 600px;
+        }
+
+        .connector-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .demographics-wrapper > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        .demographics-top {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 100px;
+            margin-bottom: 0;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .demographics-bottom {
+            max-width: 500px;
+            margin: 220px auto 0 auto;
+        }
+
+        .demo-box {
+            padding: 30px;
+            border: 2px solid #000000;
+            background: #000000;
+            color: #FFFFFF;
+            text-align: center;
+            position: relative;
+        }
+
+        .demo-box h3 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .demo-box.shared {
+            padding: 40px 30px;
+            background: #FFFFFF;
+            color: #000000;
+        }
+
+        .demo-box.shared h3 {
+            margin-bottom: 30px;
+        }
+
+        /* Simple straight line connectors */
+        
+        /* From MEN 25-45 straight down to Sports Dad */
+        .demographics-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 95px;
+            left: calc(25% + 165px);
+            width: 2px;
+            height: 615px;
+            background: #000000;
+            z-index: 0;
+        }
+
+        /* From WOMEN 25-45 straight down to Busy Mom */
+        .demographics-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 95px;
+            right: calc(25% + 165px);
+            width: 2px;
+            height: 615px;
+            background: #000000;
+            z-index: 0;
+        }
+
+        /* Diagonal line from Shared Identities to Sports Dad */
+        .demo-box.shared::before {
+            content: '';
+            position: absolute;
+            bottom: -185px;
+            left: 15%;
+            width: 200px;
+            height: 2px;
+            background: #000000;
+            transform: rotate(-35deg);
+            transform-origin: left center;
+        }
+
+        /* Diagonal line from Shared Identities to Busy Mom */
+        .demo-box.shared::after {
+            content: '';
+            position: absolute;
+            bottom: -185px;
+            right: 15%;
+            width: 200px;
+            height: 2px;
+            background: #000000;
+            transform: rotate(35deg);
+            transform-origin: right center;
+        }
+
+        /* Remove all other connectors */
+        .demo-box.men::before,
+        .demo-box.men::after,
+        .demo-box.women::before,
+        .demo-box.women::after {
+            display: none !important;
+            content: none !important;
+        }
+
+        .shared-list {
+            text-align: left;
+            padding-left: 20px;
+        }
+
+        .shared-list li {
+            font-size: 18px;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        /* Arrow Indicators */
+        .arrow-down {
+            display: none;
+        }
+
+        .connection-arrows {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin: 40px 0;
+            font-size: 28px;
+            color: #000000;
+        }
+
+        /* Core Identities */
+        .core-identities {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 300px;
+            margin-bottom: 60px;
+            margin-top: 50px;
+            position: relative;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+        }
+
+        /* Angled arrows from identity cards to shared identities */
+        .identity-card.featured::after {
+            display: none;
+        }
+
+        .column:first-child .identity-card.featured::after {
+            display: none;
+        }
+
+        .column:last-child .identity-card.featured::after {
+            display: none;
+        }
+
+        /* Identity Cards */
+        .identity-card {
+            border: 2px solid #000000;
+            padding: 40px;
+            background: #FFFFFF;
+        }
+
+        .identity-card.simple {
+            padding: 0;
+            text-align: center;
+            background: #000000;
+            color: #FFFFFF;
+            border: 2px solid #000000;
+        }
+
+        .identity-card.simple .identity-name {
+            margin: 0;
+            padding: 30px;
+            background: #000000;
+        }
+
+        .identity-name {
+            font-size: 28px;
+            font-weight: 700;
+            margin: -40px -40px 30px -40px;
+            text-align: center;
+            background: #000000;
+            color: #FFFFFF;
+            padding: 20px;
+        }
+
+        .grips-header {
+            background: #FF0039;
+            color: #FFFFFF;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .framework-list {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+
+        .framework-list li {
+            font-size: 18px;
+            padding: 12px 0;
+            border-bottom: 1px solid #E0E0E0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .framework-list li:last-child {
+            border-bottom: none;
+        }
+
+        .framework-name {
+            font-weight: 600;
+        }
+
+        .framework-count {
+            font-weight: 700;
+            color: #666666;
+        }
+
+        .drivers-total {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 700;
+            margin: 30px 0;
+            padding: 20px;
+            background: #FF0039;
+            color: #FFFFFF;
+        }
+
+        .tiers {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .tier-box {
+            padding: 20px;
+            border: 2px solid #000000;
+            background: #FFFFFF;
+        }
+
+        .tier-box.tier-1 {
+            background: #000000;
+            color: #FFFFFF;
+            border: none;
+        }
+
+        .tier-box.tier-2 {
+            background: #FF0039;
+            color: #FFFFFF;
+            border: none;
+            text-align: center;
+        }
+
+        .tier-label {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .validation-content {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .validation-box {
+            border: 1px solid #FFFFFF;
+            padding: 20px;
+            margin-top: 15px;
+            text-align: left;
+        }
+
+        .validation-box h4 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .validation-box ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .validation-box li {
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .validation-box .intent-signals {
+            margin-top: 15px;
+        }
+
+        .tier-value {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .simple-note {
+            font-size: 16px;
+            color: #FFFFFF;
+            font-style: italic;
+            padding: 0 30px 30px 30px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .demographics {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .core-identities {
+                grid-template-columns: 1fr;
+                gap: 50px;
+            }
+        }
+
+        @media print {
+            body {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1>Slim Chickens - Core Identity Blueprint</h1>
+        <p>Systematically test and validate creative before production to reduce waste, lower CAC, improve EBITDA, and scale without team bottlenecks</p>
+    </div>
+
+    <!-- Crown - Product -->
+    <div class="crown">
+        <div class="product-box">
+            <h2>SPICY CHICKEN TENDERS</h2>
+        </div>
+    </div>
+
+    <div class="arrow-down">↓</div>
+
+    <!-- Demographics Row -->
+    <div class="demographics-wrapper">
+        <div class="demographics-top">
+            <div class="demo-box men">
+                <h3>MEN 25-45</h3>
+            </div>
+            
+            <div class="demo-box women">
+                <h3>WOMEN 25-45</h3>
+            </div>
+        </div>
+        
+        <div class="demographics-bottom">
+            <div class="demo-box shared">
+                <h3>SHARED IDENTITIES<br>(Amplification Lanes)</h3>
+                <ul class="shared-list">
+                    <li>Sports Fan</li>
+                    <li>Parent</li>
+                    <li>Value-Conscious</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="arrow-down">↓</div>
+
+    <!-- Core Identities -->
+    <div class="core-identities">
+        <!-- Left Column -->
+        <div class="column">
+            <!-- Sports Dad - Fully Detailed -->
+            <div class="identity-card featured">
+                <div class="identity-name">Sports Dad</div>
+                
+                <div class="grips-header">GRIPS</div>
+                
+                <ul class="framework-list">
+                    <li>
+                        <span class="framework-name">Problem/Solution</span>
+                        <span class="framework-count">(5)</span>
+                    </li>
+                    <li>
+                        <span class="framework-name">Promise</span>
+                        <span class="framework-count">(5)</span>
+                    </li>
+                    <li>
+                        <span class="framework-name">Offer</span>
+                        <span class="framework-count">(5)</span>
+                    </li>
+                    <li>
+                        <span class="framework-name">Compare/Contrast</span>
+                        <span class="framework-count">(5)</span>
+                    </li>
+                    <li>
+                        <span class="framework-name">Proclamation</span>
+                        <span class="framework-count">(5)</span>
+                    </li>
+                    <li>
+                        <span class="framework-name">Testimonial</span>
+                        <span class="framework-count">(5)</span>
+                    </li>
+                </ul>
+                
+                <div class="drivers-total">30 IDENTITY DRIVERS</div>
+                
+                <div class="tiers">
+                    <div class="tier-box tier-1">
+                        <div class="tier-label">TIER 1: Test 10</div>
+                        <div class="validation-content">↓<br>Determine Winners</div>
+                        <div class="validation-box">
+                            <h4>VALIDATION CRITERIA</h4>
+                            <ul>
+                                <li>• CTR ≥2.5%</li>
+                                <li>&nbsp;&nbsp;(12X current, 2.5X industry)</li>
+                                <li>• Purchase Intent ≥20%</li>
+                                <li>&nbsp;</li>
+                                <li>Intent Signals (weighted):</li>
+                                <li>Location Selection (1x)</li>
+                                <li>Contact/Lead (2x)</li>
+                                <li>Add to Cart (3x)</li>
+                                <li>Initiate Checkout (4x)</li>
+                                <li>Add Payment Info (5x)</li>
+                                <li>Purchase (10x)</li>
+                            </ul>
+                        </div>
+                        <div class="validation-content">↓</div>
+                    </div>
+                    <div class="tier-box tier-2">
+                        <div class="tier-value">TIER 2: Produce 3</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Blue Collar Dad - Simple -->
+            <div class="identity-card simple">
+                <div class="identity-name">Blue Collar Dad</div>
+                <p class="simple-note">Same GRIPS framework structure applies</p>
+            </div>
+
+            <!-- Weekend Warrior - Simple -->
+            <div class="identity-card simple">
+                <div class="identity-name">Weekend Warrior</div>
+                <p class="simple-note">Same GRIPS framework structure applies</p>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="column">
+            <!-- Busy Mom - Fully Detailed -->
+            <div class="identity-card featured">
+                <div class="identity-name">Busy Mom</div>
+                
+                <div class="grips-header">GRIPS</div>
+                
+                <ul class="framework-list">
+                    <li>
+                        <span class="framework-name">Problem/Solution</span>
+                        <span class="framework-count">(5)</span>
+                    </li>
+                    <li>
+                        <span class="framework-name">Promise</span>
+                        <span class="framework-count">(5)</span>
+                    </li>
+                    <li>
+                        <span class="framework-name">Offer</span>
+                        <span class="framework-count">(5)</span>
+                    </li>
+                    <li>
+                        <span class="framework-name">Compare/Contrast</span>
+                        <span class="framework-count">(5)</span>
+                    </li>
+                    <li>
+                        <span class="framework-name">Proclamation</span>
+                        <span class="framework-count">(5)</span>
+                    </li>
+                    <li>
+                        <span class="framework-name">Testimonial</span>
+                        <span class="framework-count">(5)</span>
+                    </li>
+                </ul>
+                
+                <div class="drivers-total">30 IDENTITY DRIVERS</div>
+                
+                <div class="tiers">
+                    <div class="tier-box tier-1">
+                        <div class="tier-label">TIER 1: Test 10</div>
+                        <div class="validation-content">↓<br>Determine Winners</div>
+                        <div class="validation-box">
+                            <h4>VALIDATION CRITERIA</h4>
+                            <ul>
+                                <li>• CTR ≥2.5%</li>
+                                <li>&nbsp;&nbsp;(12X current, 2.5X industry)</li>
+                                <li>• Purchase Intent ≥20%</li>
+                                <li>&nbsp;</li>
+                                <li>Intent Signals (weighted):</li>
+                                <li>Location Selection (1x)</li>
+                                <li>Contact/Lead (2x)</li>
+                                <li>Add to Cart (3x)</li>
+                                <li>Initiate Checkout (4x)</li>
+                                <li>Add Payment Info (5x)</li>
+                                <li>Purchase (10x)</li>
+                            </ul>
+                        </div>
+                        <div class="validation-content">↓</div>
+                    </div>
+                    <div class="tier-box tier-2">
+                        <div class="tier-value">TIER 2: Produce 3</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Career Mom - Simple -->
+            <div class="identity-card simple">
+                <div class="identity-name">Career Mom</div>
+                <p class="simple-note">Same GRIPS framework structure applies</p>
+            </div>
+
+            <!-- Social Organizer - Simple -->
+            <div class="identity-card simple">
+                <div class="identity-name">Social Organizer</div>
+                <p class="simple-note">Same GRIPS framework structure applies</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
